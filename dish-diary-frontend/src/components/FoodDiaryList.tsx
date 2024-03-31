@@ -20,15 +20,14 @@ const FoodDiaryList: React.FC = () => {
   const handleUploadSuccess = (newEntry: FoodEntry) => {
     setFoodEntries([newEntry, ...foodEntries]);
   };
-
-
+  
   return (
     <div className="container mt-4">
       <h2>Food Diary</h2>
       <FileUpload onUploadSuccess={handleUploadSuccess} />
       <ul className="list-group">
-        {foodEntries.map((entry) => (
-          <li key={entry.id} className="list-group-item">
+        {foodEntries.map((entry, index) => ( // Add index as a fallback key
+          <li key={entry.id || index} className="list-group-item">
             <div className="d-flex align-items-center">
               <img src={entry.imageUrl} alt={entry.description} className="img-fluid mr-3" style={{ maxWidth: '100px' }} />      
               <span style={{ color: 'black' }}>{entry.description}</span>        

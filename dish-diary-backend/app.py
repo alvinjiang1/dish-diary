@@ -8,7 +8,7 @@ from models import db, FoodEntry
 
 app = Flask(__name__)
 load_dotenv()
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dish_diary_database.db'  # Change this according to your database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dish_diary_database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 CORS(app)  # Allow requests from frontend domain
