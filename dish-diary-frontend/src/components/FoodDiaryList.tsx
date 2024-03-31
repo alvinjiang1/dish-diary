@@ -1,21 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import FileUpload, { FoodEntry } from './FileUpload';
 
 const FoodDiaryList: React.FC = () => {
-  // Dummy data for now
-  const foodEntries = [
-    { id: 1, description: 'Breakfast - Eggs and Toast', imageUrl: 'https://example.com/food1.jpg' },
-    { id: 2, description: 'Lunch - Salad', imageUrl: 'https://example.com/food2.jpg' },
-    // Add more entries as needed
-  ];
+  const [foodEntries, setFoodEntries] = useState<FoodEntry[]>([]);
+
+  useEffect(() => {
+    const fetchFoodDiary = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/food-diary');
+        setFoodEntries(response.data);
+      } catch (error) {
+        console.error('Error fetching food diary:', error);
+      }
+    };
+
+    fetchFoodDiary();
+  }, []);
+  const handleUploadSuccess = (newEntry: FoodEntry) => {
+    setFoodEntries([newEntry, ...foodEntries]);
+  };
+
 
   return (
     <div className="container mt-4">
       <h2>Food Diary</h2>
+      <FileUpload onUploadSuccess={handleUploadSuccess} />
       <ul className="list-group">
         {foodEntries.map((entry) => (
           <li key={entry.id} className="list-group-item">
-            <img src={entry.imageUrl} alt={entry.description} className="img-fluid mr-3" style={{ maxWidth: '100px' }} />
-            <span>{entry.description}</span>
+            <div className="d-flex align-items-center">
+              <img src={entry.imageUrl} alt={entry.description} className="img-fluid mr-3" style={{ maxWidth: '100px' }} />      
+              <span style={{ color: 'black' }}>{entry.description}</span>        
+            </div>
           </li>
         ))}
       </ul>

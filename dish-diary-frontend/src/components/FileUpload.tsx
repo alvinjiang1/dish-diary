@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const FileUpload: React.FC = () => {
+export interface FoodEntry {
+  id: number;
+  description: string;
+  imageUrl: string;
+}
+
+interface FileUploadProps {
+  onUploadSuccess: (newEntry: FoodEntry) => void; // Callback function to handle upload success
+}
+
+const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -9,10 +20,22 @@ const FileUpload: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle file upload logic
-    if (selectedFile) {      
-      console.log('Selected file:', selectedFile);
+  const handleSubmit = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response.data);
+        onUploadSuccess(response.data); // Trigger the callback function with the new entry
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     }
   };
 
