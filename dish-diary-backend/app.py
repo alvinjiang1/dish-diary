@@ -1,13 +1,19 @@
+from dotenv import load_dotenv
 import os
+from ai.openai_client import OpenAIClient
 from flask import Flask, request, jsonify, send_from_directory, url_for
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
 app = Flask(__name__)
+load_dotenv()
 CORS(app)  # Allow requests from frontend domain
 
 # Dummy data for storing food diary entries (replace with database later)
 food_entries = []
+
+# Initialize OpenAI client
+openai_client = OpenAIClient(api_key=os.getenv("API_KEY"))
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -31,7 +37,7 @@ def upload_file():
     file.save(filepath)
     
     uploaded_image_url = url_for('uploaded_file', filename=filename, _external=True)
-    image_description = "placeholder_description"
+    image_description = openai_client.process_image(image_url=filepath)
 
     # Add the uploaded image to the top of the food diary list
     food_entries.insert(0, {'image_url': uploaded_image_url, 'description': image_description})
