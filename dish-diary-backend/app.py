@@ -37,7 +37,7 @@ def upload_file():
     file.save(filepath)
     
     uploaded_image_url = url_for('uploaded_file', filename=filename, _external=True)
-    image_description = openai_client.process_image(image_url=filepath)
+    image_description = openai_client.process_image(image_url=uploaded_image_url)
 
     # Add the uploaded image to the top of the food diary list
     food_entries.insert(0, {'image_url': uploaded_image_url, 'description': image_description})

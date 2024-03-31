@@ -8,9 +8,15 @@ class OpenAIClient:
         self.base_url = 'https://api.openai.com/v1'
 
     # Function to encode the image
-    def encode_image(self, image_path):        
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
+    def encode_image(self, image_url):        
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            encoded_string = base64.b64encode(response.content).decode('utf-8')
+            return encoded_string
+        else:
+            # Handle any errors, such as failed request or invalid URL
+            print("Failed to fetch image from URL:", image_url) 
+        return None
 
     def process_image(self, image_url):        
         encoded_image = self.encode_image(image_url)
